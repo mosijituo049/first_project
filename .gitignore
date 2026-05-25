@@ -6,3 +6,7 @@ notebooks/.env
 notebooks/.DS_Store
 .DS_Store
 *.in
+credentials/
+__pycache__/
+*.pyc
+*.parquet

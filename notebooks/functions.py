@@ -3,24 +3,45 @@
 #
 #================================================================
 
-# Remember to modify your functions to use the template shown below
+import pandas as pd
+from google.cloud import bigquery
+from pandas_gbq import to_gbq
 
-def function_name(input1: data_type1, input2: data_type2,..., opt_arg: data_type_opt= default_value) -> output_data_type:
-	"""
-	Add a description of what the function does
+def clean_col_name(df_origin):
+    df=df_origin.copy()
 
-	Arguments:
-	---------
-	input1: data_type and which information should contain
-	input2: data_type and which information should contain
-	opt_arg: data_type and which information should contain
+    df.columns = (
+        df.columns
+        .str.lower()
+        .str.replace(" ", "_")
+    )
+    
+    return df
 
-	Outputs:
-	-------
-	data_type and which information will contain
-	"""
-	
-	# Your function code here
+def data_loader():
+    # read csv
+    df_apps = pd.read_csv("../data/raw/raw_googleplaystore.csv")
+    df_reviews = pd.read_csv("../data/raw/raw_googleplaystore_user_reviews.csv")
 
-	
-	return opuput
+    df_apps = clean_col_name(df_apps)
+    df_reviews = clean_col_name(df_reviews)
+
+    # DataFrame to BigQuery table
+    tables = {
+        "raw_apps": df_apps,
+        "raw_reviews": df_reviews
+    }
+
+    # upload
+    for table_name, dataframe in tables.items():
+
+        print(f"Uploading {table_name}...")
+
+        to_gbq(
+            dataframe=dataframe,
+            destination_table=f"google_play_store_apps.{table_name}",
+            project_id="ironhack-497023",
+            if_exists="replace"
+        )
+
+    print("All tables uploaded successfully!")
