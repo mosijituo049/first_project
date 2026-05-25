@@ -10,3 +10,6 @@ credentials/
 __pycache__/
 *.pyc
 *.parquet
+sql_scripts/logs/
+target/
+dbt_packages/
