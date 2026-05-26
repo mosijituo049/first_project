@@ -45,3 +45,34 @@ def data_loader():
         )
 
     print("All tables uploaded successfully!")
+
+def export_clean_data():
+    client = bigquery.Client()
+
+    # apps
+    query_apps = """
+    SELECT *
+    FROM `ironhack-497023.google_play_store_apps.stg_apps`
+    """
+    
+    df_apps = client.query(query_apps).to_dataframe()
+    
+    df_apps.to_csv(
+        "../data/clean/clean_apps.csv",
+        index=False
+    )
+    
+    # reviews
+    query_reviews = """
+    SELECT *
+    FROM `ironhack-497023.google_play_store_apps.stg_reviews`
+    """
+    
+    df_reviews = client.query(query_reviews).to_dataframe()
+    
+    df_reviews.to_csv(
+        "../data/clean/clean_reviews.csv",
+        index=False
+    )
+    
+    print("Clean data exported.")
