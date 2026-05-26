@@ -6,6 +6,10 @@
 import pandas as pd
 from google.cloud import bigquery
 from pandas_gbq import to_gbq
+import yaml
+
+with open("../config.yaml", "r") as f:
+    config = yaml.safe_load(f)
 
 def clean_col_name(df_origin):
     df=df_origin.copy()
@@ -20,8 +24,8 @@ def clean_col_name(df_origin):
 
 def data_loader():
     # read csv
-    df_apps = pd.read_csv("../data/raw/raw_googleplaystore.csv")
-    df_reviews = pd.read_csv("../data/raw/raw_googleplaystore_user_reviews.csv")
+    df_apps = pd.read_csv(config['input_data']['file_apps'])
+    df_reviews = pd.read_csv(config['input_data']['file_reviews'])
 
     df_apps = clean_col_name(df_apps)
     df_reviews = clean_col_name(df_reviews)
@@ -39,7 +43,7 @@ def data_loader():
 
         to_gbq(
             dataframe=dataframe,
-            destination_table=f"google_play_store_apps.{table_name}",
+            destination_table=f"{config['gcp']['dataset']}.{table_name}",
             project_id="ironhack-497023",
             if_exists="replace"
         )
@@ -50,9 +54,9 @@ def export_clean_data():
     client = bigquery.Client()
 
     # apps
-    query_apps = """
+    query_apps = f"""
     SELECT *
-    FROM `ironhack-497023.google_play_store_apps.stg_apps`
+    FROM `{config['tables']['stg_apps']}`
     """
     
     df_apps = client.query(query_apps).to_dataframe()
@@ -63,9 +67,9 @@ def export_clean_data():
     )
     
     # reviews
-    query_reviews = """
+    query_reviews = f"""
     SELECT *
-    FROM `ironhack-497023.google_play_store_apps.stg_reviews`
+    FROM `{config['tables']['stg_reviews']}`
     """
     
     df_reviews = client.query(query_reviews).to_dataframe()
