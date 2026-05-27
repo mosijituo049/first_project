@@ -1,5 +1,20 @@
 input_data:
   file: "../data/raw/raw_data_file.csv"
+  file_apps: "../data/raw/raw_googleplaystore.csv"
+  file_reviews: "../data/raw/raw_googleplaystore_user_reviews.csv"
 
 output_data:
   file: "../data/clean/cleaned_data_file.csv"
+
+gcp:
+  project_id: ironhack-497023
+  dataset: google_play_store_apps
+
+tables:
+  raw_apps: ironhack-497023.google_play_store_apps.raw_apps
+  raw_reviews: ironhack-497023.google_play_store_apps.raw_reviews
+  stg_apps: ironhack-497023.google_play_store_apps.stg_apps
+  stg_reviews: ironhack-497023.google_play_store_apps.stg_reviews
+  int_review_metrics_by_app: ironhack-497023.google_play_store_apps.int_review_metrics_by_app
+  mart_apps_summary: ironhack-497023.google_play_store_apps.mart_apps_summary
+  
