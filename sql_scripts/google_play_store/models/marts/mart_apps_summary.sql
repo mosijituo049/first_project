@@ -12,7 +12,9 @@ SELECT
 
     a.price,
 
-    r.review_count,
+    a.reviews AS total_reviews,
+
+    r.review_count AS sample_review_count,
 
     r.avg_sentiment,
 
